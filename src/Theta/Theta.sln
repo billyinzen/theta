@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Theta.Api", "Theta.Api\Theta.Api.csproj", "{19378C25-8EF8-4A65-85B2-E2F3B4BF1AF8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Theta.Api.Tests", "Theta.Api.Tests\Theta.Api.Tests.csproj", "{46FF72A5-3FE1-494E-A56F-A3E922EFEE8D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{19378C25-8EF8-4A65-85B2-E2F3B4BF1AF8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19378C25-8EF8-4A65-85B2-E2F3B4BF1AF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19378C25-8EF8-4A65-85B2-E2F3B4BF1AF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19378C25-8EF8-4A65-85B2-E2F3B4BF1AF8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46FF72A5-3FE1-494E-A56F-A3E922EFEE8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46FF72A5-3FE1-494E-A56F-A3E922EFEE8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46FF72A5-3FE1-494E-A56F-A3E922EFEE8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46FF72A5-3FE1-494E-A56F-A3E922EFEE8D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
