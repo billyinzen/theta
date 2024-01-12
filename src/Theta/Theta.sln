@@ -19,6 +19,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Theta.Core", "Theta.Core\Th
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Theta.Core.Tests", "Theta.Core.Tests\Theta.Core.Tests.csproj", "{1EC61B60-1A1F-479D-8394-ED6DBE4730C6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Theta.Common", "Theta.Common\Theta.Common.csproj", "{99A14334-14DE-45AF-BD24-D8DC3D771096}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Theta.Common.Tests", "Theta.Common.Tests\Theta.Common.Tests.csproj", "{265D03D4-C011-4D99-85B5-F78EB0AFA1E0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -60,5 +64,13 @@ Global
 		{1EC61B60-1A1F-479D-8394-ED6DBE4730C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1EC61B60-1A1F-479D-8394-ED6DBE4730C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1EC61B60-1A1F-479D-8394-ED6DBE4730C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99A14334-14DE-45AF-BD24-D8DC3D771096}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99A14334-14DE-45AF-BD24-D8DC3D771096}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99A14334-14DE-45AF-BD24-D8DC3D771096}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99A14334-14DE-45AF-BD24-D8DC3D771096}.Release|Any CPU.Build.0 = Release|Any CPU
+		{265D03D4-C011-4D99-85B5-F78EB0AFA1E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{265D03D4-C011-4D99-85B5-F78EB0AFA1E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{265D03D4-C011-4D99-85B5-F78EB0AFA1E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{265D03D4-C011-4D99-85B5-F78EB0AFA1E0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
