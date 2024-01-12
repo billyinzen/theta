@@ -7,6 +7,18 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Theta.Api", "Theta.Api\Thet
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Theta.Api.Tests", "Theta.Api.Tests\Theta.Api.Tests.csproj", "{46FF72A5-3FE1-494E-A56F-A3E922EFEE8D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Theta.Domain", "Theta.Domain\Theta.Domain.csproj", "{B4629702-9574-4370-8FE6-DA6D2C8EF3DA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Theta.Domain.Tests", "Theta.Domain.Tests\Theta.Domain.Tests.csproj", "{96E0278E-B38E-46B4-9C4F-914D622B4ADA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Theta.Data", "Theta.Data\Theta.Data.csproj", "{B967FD71-A01F-4399-9DF4-9CA853B3F67A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Theta.Data.Tests", "Theta.Data.Tests\Theta.Data.Tests.csproj", "{1646F4D2-7189-40A0-A2C5-3695DA466D8E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Theta.Core", "Theta.Core\Theta.Core.csproj", "{CCA12FD6-5C8D-451D-AFE4-8B18F7DBFC4F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Theta.Core.Tests", "Theta.Core.Tests\Theta.Core.Tests.csproj", "{1EC61B60-1A1F-479D-8394-ED6DBE4730C6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +36,29 @@ Global
 		{46FF72A5-3FE1-494E-A56F-A3E922EFEE8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{46FF72A5-3FE1-494E-A56F-A3E922EFEE8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{46FF72A5-3FE1-494E-A56F-A3E922EFEE8D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4629702-9574-4370-8FE6-DA6D2C8EF3DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4629702-9574-4370-8FE6-DA6D2C8EF3DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4629702-9574-4370-8FE6-DA6D2C8EF3DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4629702-9574-4370-8FE6-DA6D2C8EF3DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{96E0278E-B38E-46B4-9C4F-914D622B4ADA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{96E0278E-B38E-46B4-9C4F-914D622B4ADA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{96E0278E-B38E-46B4-9C4F-914D622B4ADA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96E0278E-B38E-46B4-9C4F-914D622B4ADA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B967FD71-A01F-4399-9DF4-9CA853B3F67A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B967FD71-A01F-4399-9DF4-9CA853B3F67A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B967FD71-A01F-4399-9DF4-9CA853B3F67A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B967FD71-A01F-4399-9DF4-9CA853B3F67A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1646F4D2-7189-40A0-A2C5-3695DA466D8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1646F4D2-7189-40A0-A2C5-3695DA466D8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1646F4D2-7189-40A0-A2C5-3695DA466D8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1646F4D2-7189-40A0-A2C5-3695DA466D8E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CCA12FD6-5C8D-451D-AFE4-8B18F7DBFC4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCA12FD6-5C8D-451D-AFE4-8B18F7DBFC4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CCA12FD6-5C8D-451D-AFE4-8B18F7DBFC4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CCA12FD6-5C8D-451D-AFE4-8B18F7DBFC4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1EC61B60-1A1F-479D-8394-ED6DBE4730C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1EC61B60-1A1F-479D-8394-ED6DBE4730C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1EC61B60-1A1F-479D-8394-ED6DBE4730C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1EC61B60-1A1F-479D-8394-ED6DBE4730C6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
