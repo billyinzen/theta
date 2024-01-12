@@ -1,0 +1,5 @@
+# All files are checked into the repo using LF
+* text=auto
+
+# Windows-specific files are checked out with CRLF
+*.bat eol=crlf
