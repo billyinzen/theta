@@ -7,13 +7,32 @@
     <InvariantGlobalization>true</InvariantGlobalization>
   </PropertyGroup>
 
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DocumentationFile>bin\Debug\net8.0\Theta.Api.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DocumentationFile>bin\Release\net8.0\Theta.Api.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
   
   <ItemGroup>
     <InternalsVisibleTo Include="Theta.Api.Tests" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\Theta.Common\Theta.Common.csproj" />
+    <ProjectReference Include="..\Theta.Core\Theta.Core.csproj" />
+    <ProjectReference Include="..\Theta.Data\Theta.Data.csproj" />
+    <ProjectReference Include="..\Theta.Domain\Theta.Domain.csproj" />
   </ItemGroup>
 
 </Project>

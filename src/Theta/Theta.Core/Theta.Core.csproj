@@ -10,4 +10,21 @@
     <InternalsVisibleTo Include="Theta.Core.Tests" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="UseCases\Venues\GetVenueById\" />
+    <Folder Include="UseCases\Venues\GetVenues\" />
+    <Folder Include="UseCases\Venues\RemoveVenueById\" />
+    <Folder Include="UseCases\Venues\UpdateVenueById\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.9.0" />
+    <PackageReference Include="MediatR" Version="12.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Theta.Data\Theta.Data.csproj" />
+    <ProjectReference Include="..\Theta.Domain\Theta.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -9,5 +9,13 @@
   <ItemGroup>
     <InternalsVisibleTo Include="Theta.Domain.Tests" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Theta.Common\Theta.Common.csproj" />
+  </ItemGroup>
   
 </Project>

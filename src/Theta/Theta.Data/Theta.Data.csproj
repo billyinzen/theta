@@ -10,4 +10,13 @@
     <InternalsVisibleTo Include="Theta.Data.Tests" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Theta.Domain\Theta.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

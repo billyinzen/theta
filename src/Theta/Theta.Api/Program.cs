@@ -1,11 +1,18 @@
+using Theta.Core;
+using Theta.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddCoreServices()
+    .AddDataServices(builder.Configuration);
+
+builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true); 
+builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-builder.Services.AddControllers();
 
 var app = builder.Build();
 

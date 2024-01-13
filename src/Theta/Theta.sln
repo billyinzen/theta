@@ -23,6 +23,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Theta.Common", "Theta.Commo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Theta.Common.Tests", "Theta.Common.Tests\Theta.Common.Tests.csproj", "{265D03D4-C011-4D99-85B5-F78EB0AFA1E0}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ProjectFiles", "ProjectFiles", "{AAEB27EE-AEF9-4A3E-9C4A-3A1DD34E97C9}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\commitlint.config.js = ..\..\commitlint.config.js
+		..\..\package-lock.json = ..\..\package-lock.json
+		..\..\package.json = ..\..\package.json
+		..\..\README.md = ..\..\README.md
+		..\..\.gitignore = ..\..\.gitignore
+		..\..\.gitattributes = ..\..\.gitattributes
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
