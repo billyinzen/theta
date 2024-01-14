@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Theta.Common.Models;
 using Theta.Data.Context;
+using Theta.Domain.Features;
 
 namespace Theta.Data.Repositories.Abstract;
 

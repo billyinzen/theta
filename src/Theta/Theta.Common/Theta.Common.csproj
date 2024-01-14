@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="Theta.Core.Tests" />
+    <InternalsVisibleTo Include="Theta.Common.Tests" />
   </ItemGroup>
 
   <ItemGroup>

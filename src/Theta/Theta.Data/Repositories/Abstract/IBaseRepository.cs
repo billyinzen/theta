@@ -1,4 +1,5 @@
 using Theta.Common.Models;
+using Theta.Domain.Features;
 
 namespace Theta.Data.Repositories.Abstract;
 

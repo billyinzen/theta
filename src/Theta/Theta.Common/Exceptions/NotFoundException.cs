@@ -5,6 +5,8 @@ namespace Theta.Common.Exceptions;
 /// </summary>
 public class NotFoundException : ApplicationException
 {
+    internal const string ErrorMessage = "Resource not found";
+    
     public Type Type { get; }
     
     public Guid Id { get; }
@@ -15,7 +17,7 @@ public class NotFoundException : ApplicationException
     /// <param name="type">Type of resource being requested</param>
     /// <param name="id">Unique identifier of the resource being requested</param>
     public NotFoundException(Type type, Guid id)
-        : base($"{type.Name} not found with Id \"{id:D}\"")
+        : base(ErrorMessage)
     {
         Id = id;
         Type = type;

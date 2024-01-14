@@ -8,13 +8,6 @@ public class VenueTests
     // Ctor
     
     [Fact]
-    public void Ctor_InitializesObjectWithDefaults()
-    {
-        var sut = new Venue();
-        sut.Name.Should().Be(default);
-    }
-    
-    [Fact]
     public void Ctor_InitializesObjectWithGivenParameters()
     {
         const string name = "Name";

@@ -2,13 +2,14 @@ using Microsoft.EntityFrameworkCore;
 using Theta.Common.Helpers;
 using Theta.Common.Models;
 using Theta.Data.Configuration;
+using Theta.Domain.Features;
 using Theta.Domain.Features.Venues;
 
 namespace Theta.Data.Context;
 
 public class ThetaDbContext : DbContext
 {
-    public DbSet<Venue> Venues { get; set; }
+    public DbSet<Venue> Venues { get; init; } = default!;
     
     /// <summary>
     /// Initialize a new instance of the <see cref="ThetaDbContext"/> class
@@ -24,9 +25,7 @@ public class ThetaDbContext : DbContext
         modelBuilder.Entity<Venue>(VenueConfiguration.Configure);
         base.OnModelCreating(modelBuilder);
     }
-
-    // Override SaveChangesAsync
-
+    
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         foreach (var entity in ChangeTracker.Entries()

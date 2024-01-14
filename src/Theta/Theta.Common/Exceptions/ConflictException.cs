@@ -5,6 +5,8 @@ namespace Theta.Common.Exceptions;
 /// </summary>
 public class ConflictException : ApplicationException
 {
+    internal const string ErrorMessage = "Precondition test failed";
+    
     public Type Type { get; }
     
     public Guid Id { get; }
@@ -21,7 +23,7 @@ public class ConflictException : ApplicationException
     /// <param name="entityTag">Etag of the matched resource</param>
     /// <param name="providedEntityTag">Etag provided in the request body</param>
     public ConflictException(Type type, Guid id, string entityTag, string providedEntityTag)
-        : base($"{type.Name} not found with Id \"{id:D}\"")
+        : base(ErrorMessage)
     {
         Id = id;
         Type = type;

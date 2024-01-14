@@ -1,8 +1,8 @@
 using Theta.Common.Helpers;
 
-namespace Theta.Common.Models;
+namespace Theta.Domain.Features;
 
-public class BaseEntity
+public abstract class BaseEntity
 {
     /// <summary>
     /// Unique identifier for the resource 
