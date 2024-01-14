@@ -24,4 +24,15 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="UseCases\Venues\CreateVenue\" />
+    <Folder Include="UseCases\Venues\GetVenueById\" />
+    <Folder Include="UseCases\Venues\RemoveVenueById\" />
+    <Folder Include="UseCases\Venues\UpdateVenueById\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Theta.Core\Theta.Core.csproj" />
+  </ItemGroup>
+
 </Project>
