@@ -35,7 +35,6 @@ public class UpdateVenueByIdCommandHandler : IRequestHandler<UpdateVenueByIdComm
         if (!venue.CompareEtag(request.EntityTag))
             throw new ConflictException(typeof(Venue), request.Id, venue.EntityTag, request.EntityTag);
 
-        // TODO: move this mutation into the domain layer somehow
         venue.Name = request.Name;
 
         await _unitOfWork.Venues.UpdateAsync(venue, cancellationToken);
