@@ -1,9 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Theta.Common.Models;
 using Theta.Data.Context;
-using Theta.Data.Repositories.Interfaces;
 
-namespace Theta.Data.Repositories;
+namespace Theta.Data.Repositories.Abstract;
 
 public abstract class BaseRepository<TEntity> : IBaseRepository<TEntity>
     where TEntity: BaseEntity
@@ -29,7 +28,19 @@ public abstract class BaseRepository<TEntity> : IBaseRepository<TEntity>
     public async Task<CommandResult> CreateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         await Context.Set<TEntity>().AddAsync(entity, cancellationToken);
-        await Context.SaveChangesAsync(cancellationToken);
         return true;
+    }
+
+    public async Task<CommandResult> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
+    {
+        Context.Set<TEntity>().Update(entity);
+        return await Task.FromResult<CommandResult>(true);
+    }
+
+    public async Task<CommandResult> RemoveAsync(TEntity entity, CancellationToken cancellationToken = default)
+    {
+        entity.Delete();
+        Context.Set<TEntity>().Update(entity);
+        return await Task.FromResult<CommandResult>(true);
     }
 }

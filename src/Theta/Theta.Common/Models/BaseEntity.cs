@@ -22,11 +22,32 @@ public class BaseEntity
     /// <summary>
     /// Unique identifier for a specific version of a resource used in concurrency checks
     /// </summary>
-    public string EntityTag =>
-        ChecksumHelper.GetHashValue(ChecksumHelper.GetHashValue($"{Id:N}+{CreatedDate:O}") + $"+{ModifiedDate:O}");
+    public string EntityTag
+    {
+        get
+        {
+            var etag = ChecksumHelper.GetHashValue($"{Id:N}+{CreatedDate:O}");
+            etag = ChecksumHelper.GetHashValue($"{etag}+{ModifiedDate}");
+            return $"\"{etag}\"";
+        }
+    }
     
     /// <summary>
     /// Flag indicating whether the resource has been soft deleted
     /// </summary>
-    public bool IsDeleted { get; set; }
+    public bool IsDeleted { get; private set; }
+
+    public void Delete()
+    {
+        IsDeleted = true;
+    }
+    
+    public bool CompareEtag(string value)
+    {
+        // Always false if either value is empty
+        if (string.IsNullOrEmpty(EntityTag) || string.IsNullOrEmpty(value))
+            return false;
+        
+        return EntityTag.Equals(value, StringComparison.OrdinalIgnoreCase);
+    }
 }

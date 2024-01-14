@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Theta.Data.Context;
+using Theta.Data.Repositories.Abstract;
 using Theta.Data.Repositories.Interfaces;
 using Theta.Domain.Features.Venues;
 
@@ -20,5 +21,11 @@ public class VenueRepository : BaseRepository<Venue>, IVenueRepository
     public async Task<bool> IsNameUniqueAsync(string name, CancellationToken cancellationToken = default)
         => !await Context.Venues.AnyAsync(
             predicate: venue => venue.Name == name, 
+            cancellationToken: cancellationToken);
+
+    /// <inheritdoc/>
+    public async Task<bool> IsNameUniqueAsync(string name, Guid id, CancellationToken cancellationToken = default)
+        => !await Context.Venues.AnyAsync(
+            predicate: venue => venue.Name == name && venue.Id != id, 
             cancellationToken: cancellationToken);
 }

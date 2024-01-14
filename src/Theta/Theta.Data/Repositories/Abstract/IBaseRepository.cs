@@ -1,6 +1,6 @@
 using Theta.Common.Models;
 
-namespace Theta.Data.Repositories.Interfaces;
+namespace Theta.Data.Repositories.Abstract;
 
 public interface IBaseRepository<TEntity> 
     where TEntity: BaseEntity
@@ -10,4 +10,8 @@ public interface IBaseRepository<TEntity>
     Task<TEntity?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
     
     Task<CommandResult> CreateAsync(TEntity entity, CancellationToken cancellationToken = default);
+
+    Task<CommandResult> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default);
+
+    Task<CommandResult> RemoveAsync(TEntity entity, CancellationToken cancellationToken = default);
 }

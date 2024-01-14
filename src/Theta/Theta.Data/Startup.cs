@@ -2,8 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Theta.Data.Context;
-using Theta.Data.Repositories;
-using Theta.Data.Repositories.Interfaces;
+using Theta.Data.Services;
 
 namespace Theta.Data;
 
@@ -14,7 +13,7 @@ public static class Startup
         services.AddDbContext<ThetaDbContext>(options => 
             options.UseSqlite(configuration.GetConnectionString("Sqlite")));
 
-        services.AddScoped<IVenueRepository, VenueRepository>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
         
         return services;
     }
