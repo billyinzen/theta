@@ -6,7 +6,7 @@ namespace Theta.Data.Tests.TestHelpers;
 
 public abstract class DatabaseAwareTest
 {
-    protected readonly ThetaDbContext Context;
+    protected readonly ThetaDbContext TestDbContext;
     
     protected DatabaseAwareTest()
     {
@@ -17,7 +17,7 @@ public abstract class DatabaseAwareTest
             .UseSqlite(connection)
             .Options;
 
-        Context = new ThetaDbContext(contextOptions);
-        Context.Database.EnsureCreated();
+        TestDbContext = new ThetaDbContext(contextOptions);
+        TestDbContext.Database.EnsureCreated();
     }
 }

@@ -23,8 +23,8 @@ public class VenueRepositoryTests : DatabaseAwareTest
     public async Task GetAllAsync_ShouldReturnCollection_WhenDatabasePopulated()
     {
         var seedData = new[] { new Venue("venue one"), new Venue("venue two"), new Venue("venue three") };
-        await Context.Venues.AddRangeAsync(seedData);
-        await Context.SaveChangesAsync();
+        await TestDbContext.Venues.AddRangeAsync(seedData);
+        await TestDbContext.SaveChangesAsync();
         
         var sut = CreateSut();
         var result = await sut.GetAllAsync();
@@ -51,8 +51,8 @@ public class VenueRepositoryTests : DatabaseAwareTest
             Id = Guid.NewGuid()
         };
         
-        await Context.Venues.AddAsync(venue);
-        await Context.SaveChangesAsync();
+        await TestDbContext.Venues.AddAsync(venue);
+        await TestDbContext.SaveChangesAsync();
         
         var sut = CreateSut();
         var result = await sut.GetByIdAsync(venue.Id);
@@ -71,7 +71,7 @@ public class VenueRepositoryTests : DatabaseAwareTest
         var result = await sut.CreateAsync(venue);
         result.Should().BeEquivalentTo<CommandResult>(true);
         
-        var entityEntry = Context.ChangeTracker.Entries().Single();
+        var entityEntry = TestDbContext.ChangeTracker.Entries().Single();
         entityEntry.State.Should().Be(EntityState.Added);
         entityEntry.Entity.As<Venue>().Name.Should().BeEquivalentTo(venue.Name);
     }
@@ -82,8 +82,8 @@ public class VenueRepositoryTests : DatabaseAwareTest
     public async Task UpdateAsync_ShouldUpdateVenue()
     {
         var venue = new Venue("Venue One");
-        await Context.Venues.AddAsync(venue);
-        await Context.SaveChangesAsync();
+        await TestDbContext.Venues.AddAsync(venue);
+        await TestDbContext.SaveChangesAsync();
 
         var sut = CreateSut();
 
@@ -92,7 +92,7 @@ public class VenueRepositoryTests : DatabaseAwareTest
         var result = await sut.UpdateAsync(venue);
         result.Should().BeEquivalentTo<CommandResult>(true);
         
-        var entityEntry = Context.ChangeTracker.Entries().Single();
+        var entityEntry = TestDbContext.ChangeTracker.Entries().Single();
         entityEntry.State.Should().Be(EntityState.Modified);
         entityEntry.Entity.As<Venue>().Name.Should().BeEquivalentTo(venue.Name);
     }
@@ -103,15 +103,15 @@ public class VenueRepositoryTests : DatabaseAwareTest
     public async Task RemoveAsync_ShouldSoftDeleteVenue()
     {
         var venue = new Venue("Venue One");
-        await Context.Venues.AddAsync(venue);
-        await Context.SaveChangesAsync();
+        await TestDbContext.Venues.AddAsync(venue);
+        await TestDbContext.SaveChangesAsync();
 
         var sut = CreateSut();
         
         var result = await sut.RemoveAsync(venue);
         result.Should().BeEquivalentTo<CommandResult>(true);
         
-        var entityEntry = Context.ChangeTracker.Entries().Single();
+        var entityEntry = TestDbContext.ChangeTracker.Entries().Single();
         entityEntry.State.Should().Be(EntityState.Modified);
         entityEntry.Entity.As<Venue>().IsDeleted.Should().BeTrue();
     }
@@ -133,8 +133,8 @@ public class VenueRepositoryTests : DatabaseAwareTest
     {
         const string name = "venue name";
 
-        await Context.Venues.AddAsync(new Venue(name));
-        await Context.SaveChangesAsync();
+        await TestDbContext.Venues.AddAsync(new Venue(name));
+        await TestDbContext.SaveChangesAsync();
         
         var sut = CreateSut();
         
@@ -149,8 +149,8 @@ public class VenueRepositoryTests : DatabaseAwareTest
 
         var seedVenue = new Venue(seedName);
         
-        await Context.Venues.AddAsync(seedVenue);
-        await Context.SaveChangesAsync();
+        await TestDbContext.Venues.AddAsync(seedVenue);
+        await TestDbContext.SaveChangesAsync();
         
         var sut = CreateSut();
         
@@ -165,8 +165,8 @@ public class VenueRepositoryTests : DatabaseAwareTest
 
         var seedVenue = new Venue(seedName);
         
-        await Context.Venues.AddAsync(seedVenue);
-        await Context.SaveChangesAsync();
+        await TestDbContext.Venues.AddAsync(seedVenue);
+        await TestDbContext.SaveChangesAsync();
         
         var sut = CreateSut();
         
@@ -182,9 +182,9 @@ public class VenueRepositoryTests : DatabaseAwareTest
 
         var seedVenue = new Venue(seedName);
         
-        await Context.Venues.AddAsync(seedVenue);
-        await Context.Venues.AddAsync(new Venue(testName));
-        await Context.SaveChangesAsync();
+        await TestDbContext.Venues.AddAsync(seedVenue);
+        await TestDbContext.Venues.AddAsync(new Venue(testName));
+        await TestDbContext.SaveChangesAsync();
         
         var sut = CreateSut();
         
@@ -195,5 +195,5 @@ public class VenueRepositoryTests : DatabaseAwareTest
     // Private Methods
 
     private VenueRepository CreateSut() 
-        => new (Context);
+        => new (TestDbContext);
 }
