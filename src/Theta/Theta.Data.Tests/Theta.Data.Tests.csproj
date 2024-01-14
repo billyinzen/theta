@@ -24,4 +24,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Theta.Data\Theta.Data.csproj" />
+  </ItemGroup>
+
 </Project>
