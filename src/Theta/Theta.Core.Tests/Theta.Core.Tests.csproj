@@ -25,10 +25,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="UseCases\Venues\RemoveVenueById\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Theta.Core\Theta.Core.csproj" />
   </ItemGroup>
 

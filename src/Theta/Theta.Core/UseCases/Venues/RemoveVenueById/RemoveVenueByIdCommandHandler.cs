@@ -1,7 +1,5 @@
-using FluentValidation;
 using MediatR;
 using Theta.Common.Exceptions;
-using Theta.Common.Helpers;
 using Theta.Common.Models;
 using Theta.Core.UseCases.Venues.UpdateVenueById;
 using Theta.Data.Services;
@@ -12,17 +10,14 @@ namespace Theta.Core.UseCases.Venues.RemoveVenueById;
 public class RemoveVenueByIdCommandHandler : IRequestHandler<RemoveVenueByIdCommand, CommandResult>
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IValidator<UpdateVenueByIdCommand> _validator;
 
     /// <summary>
     /// Initialize a new instance of the <see cref="UpdateVenueByIdCommandHandler"/> class
     /// </summary>
     /// <param name="unitOfWork"></param>
-    /// <param name="validator"></param>
-    public RemoveVenueByIdCommandHandler(IUnitOfWork unitOfWork, IValidator<UpdateVenueByIdCommand> validator)
+    public RemoveVenueByIdCommandHandler(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
-        _validator = validator;
     }
     
     public async Task<CommandResult> Handle(RemoveVenueByIdCommand request, CancellationToken cancellationToken)
