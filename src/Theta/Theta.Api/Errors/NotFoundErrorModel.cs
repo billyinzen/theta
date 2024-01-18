@@ -8,7 +8,7 @@ namespace Theta.Api.Errors;
 public class NotFoundErrorModel
     : BaseErrorModel
 {
-    private const string ErrorMessage = "Resource Not Found";
+    internal const string ErrorMessage = "Resource Not Found";
     
     /// <summary>
     /// The type of resource being requested
@@ -23,7 +23,7 @@ public class NotFoundErrorModel
     /// <summary>
     /// Initialize a new instance of the <see cref="NotFoundException"/> class
     /// </summary>
-    public NotFoundErrorModel(string resourceType, Guid id)
+    private NotFoundErrorModel(string resourceType, Guid id)
         : base(ErrorMessage)
     {
         ResourceType = resourceType;

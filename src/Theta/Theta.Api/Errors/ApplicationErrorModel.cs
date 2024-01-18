@@ -5,24 +5,24 @@ namespace Theta.Api.Errors;
 /// </summary>
 public class ApplicationErrorModel : BaseErrorModel
 {
-    private const string ErrorMessage = "Unexpected Error";
+    internal const string ErrorMessage = "Unexpected Error";
     
     /// <summary>
     /// The type of internal error
     /// </summary>
-    public string ErrorType { get; }
+    public string ErrorType { get; private init; }
     
     /// <summary>
     /// Description of the internal error
     /// </summary>
-    public string Exception { get; }
+    public string Exception { get; private init; }
 
     /// <summary>
     /// Initialize a new instance of the <see cref="ApplicationErrorModel"/> class
     /// </summary>
     /// <param name="errorType"></param>
     /// <param name="exception"></param>
-    public ApplicationErrorModel(string errorType, string exception)
+    private ApplicationErrorModel(string errorType, string exception)
         : base(ErrorMessage)
     {
         ErrorType = errorType;
@@ -34,5 +34,5 @@ public class ApplicationErrorModel : BaseErrorModel
     /// </summary>
     /// <param name="exception">The exception from which to generate the error model</param>
     public static ApplicationErrorModel FromException(Exception exception)
-        => new ApplicationErrorModel(exception.GetType().Name, exception.Message);
+        => new (exception.GetType().Name, exception.Message);
 }

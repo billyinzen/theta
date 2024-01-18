@@ -7,7 +7,7 @@ namespace Theta.Api.Errors;
 /// </summary>
 public class ConflictErrorModel : BaseErrorModel
 {
-    private const string ErrorMessage = "Concurrency Check Failed";
+    internal const string ErrorMessage = "Concurrency Check Failed";
     
     /// <summary>
     /// The type of resource being requested
@@ -36,7 +36,7 @@ public class ConflictErrorModel : BaseErrorModel
     /// <param name="id"></param>
     /// <param name="requested"></param>
     /// <param name="current"></param>
-    public ConflictErrorModel(string resourceType, Guid id, string requested, string current)
+    private ConflictErrorModel(string resourceType, Guid id, string requested, string current)
         : base(ErrorMessage)
     {
         ResourceType = resourceType;

@@ -7,7 +7,7 @@ namespace Theta.Api.Errors;
 /// </summary>
 public class ValidationErrorModel : BaseErrorModel
 {
-    private const string ErrorMessage = "Validation Error";
+    internal const string ErrorMessage = "Validation Error";
     
     /// <summary>
     /// Collection of validation errors
@@ -18,7 +18,7 @@ public class ValidationErrorModel : BaseErrorModel
     /// Initialize a new instance of the <see cref="ValidationErrorModel"/> class
     /// </summary>
     /// <param name="errors"></param>
-    public ValidationErrorModel(Dictionary<string, IEnumerable<string>> errors)
+    private ValidationErrorModel(Dictionary<string, IEnumerable<string>> errors)
         : base(ErrorMessage)
     {
         Errors = errors;
