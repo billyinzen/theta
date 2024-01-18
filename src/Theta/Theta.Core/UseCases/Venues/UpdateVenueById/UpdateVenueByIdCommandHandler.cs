@@ -1,7 +1,6 @@
 using FluentValidation;
 using MediatR;
 using Theta.Common.Exceptions;
-using Theta.Common.Helpers;
 using Theta.Data.Services;
 using Theta.Domain.Features.Venues;
 
