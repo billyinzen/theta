@@ -1,4 +1,6 @@
 using AutoMapper;
+using FluentValidation;
+using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -7,8 +9,11 @@ using Theta.Api.Features.Venues;
 using Theta.Api.Features.Venues.DTOs;
 using Theta.Common.Exceptions;
 using Theta.Common.Helpers;
+using Theta.Core.UseCases.Venues.CreateVenue;
 using Theta.Core.UseCases.Venues.GetVenueById;
 using Theta.Core.UseCases.Venues.GetVenues;
+using Theta.Core.UseCases.Venues.RemoveVenueById;
+using Theta.Core.UseCases.Venues.UpdateVenueById;
 using Theta.Domain.Features.Venues;
 
 namespace Theta.Api.Tests.Features.Venues;
@@ -50,16 +55,17 @@ public class VenuesControllerTests
         
         _mediator.Setup(m =>
                 m.Send(It.IsAny<GetVenuesQuery>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(venues);
+            .ReturnsAsync(venues)
+            .Verifiable(Times.Once);
 
         var sut = CreateSut();
         var response = await sut.GetVenues();
 
         var okResponse = response as OkObjectResult;
         okResponse.Should().NotBeNull();
-        okResponse!.StatusCode.Should().Be(200);
+        okResponse?.StatusCode.Should().Be(200);
 
-        var content = okResponse.Value as IEnumerable<VenueReadDto>;
+        var content = okResponse?.Value as IEnumerable<VenueReadDto>;
         content.Should().BeEquivalentTo(expected);
     }
     
@@ -75,7 +81,7 @@ public class VenuesControllerTests
 
         var noContentResponse = response as NoContentResult;
         noContentResponse.Should().NotBeNull();
-        noContentResponse!.StatusCode.Should().Be(204);
+        noContentResponse?.StatusCode.Should().Be(204);
     }
     
     [Fact]
@@ -96,9 +102,9 @@ public class VenuesControllerTests
 
         var objectResponse = response as ObjectResult;
         objectResponse.Should().NotBeNull();
-        objectResponse!.StatusCode.Should().Be(500);
+        objectResponse?.StatusCode.Should().Be(500);
         
-        var content = objectResponse.Value as ApplicationErrorModel;
+        var content = objectResponse?.Value as ApplicationErrorModel;
         content.Should().BeEquivalentTo(expected);
     }
     
@@ -114,11 +120,14 @@ public class VenuesControllerTests
             ModifiedDate = DateTimeOffset.MaxValue
         };
 
+        var query = new GetVenueByIdQuery(venue.Id);
+
         var expected = _mapper.Map<VenueReadDto>(venue);
         
         _mediator.Setup(m =>
-                m.Send(It.IsAny<GetVenueByIdQuery>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(venue);
+                m.Send(It.Is<GetVenueByIdQuery>(q => q == query), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(venue)
+            .Verifiable(Times.Once);
 
         var sut = CreateSut();
         var response = await sut.GetVenueById(venue.Id);
@@ -191,10 +200,13 @@ public class VenuesControllerTests
             CreatedDate = DateTimeOffset.MinValue,
             ModifiedDate = DateTimeOffset.MaxValue
         };
+
+        var query = new GetVenueByIdQuery(venue.Id);
         
         _mediator.Setup(m =>
-                m.Send(It.IsAny<GetVenueByIdQuery>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(venue);
+                m.Send(It.Is<GetVenueByIdQuery>(q => q == query), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(venue)
+            .Verifiable(Times.Once);
 
         var sut = CreateSut();
         var response = await sut.GetVenueByIdHeaders(venue.Id);
@@ -252,6 +264,316 @@ public class VenuesControllerTests
         content.Should().BeEquivalentTo(expected);
     }
 
+    // Add Venue
+
+    [Fact]
+    public async Task AddVenue_ReturnsCreated_WhenVenueCreated()
+    {
+        var command = new CreateVenueCommand("New test venue");
+
+        var venue = new Venue(command.Name)
+        {
+            Id = Guid.NewGuid(),
+            CreatedDate = DateTimeOffset.MinValue,
+            ModifiedDate = DateTimeOffset.Now
+        };
+
+        var expected = _mapper.Map<VenueReadDto>(venue);
+        
+        _mediator.Setup(m =>
+                m.Send(It.Is<CreateVenueCommand>(c => c == command), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(venue)
+            .Verifiable(Times.Once);
+
+        var sut = CreateSut();
+        var response = await sut.AddVenue(new VenueWriteDto(command.Name));
+
+        sut.ControllerContext.HttpContext.Response.Headers.ETag.Should().BeEquivalentTo(venue.EntityTag);
+
+        var createdResponse = response as CreatedAtActionResult;
+        createdResponse.Should().NotBeNull();
+        createdResponse?.StatusCode.Should().Be(201);
+        createdResponse?.RouteValues?["id"].Should().BeEquivalentTo(venue.Id);
+
+        var content = createdResponse?.Value as VenueReadDto;
+        content.Should().BeEquivalentTo(expected);
+    }
+
+    [Fact]
+    public async Task AddVenue_ReturnsValidationError_WhenValidationFailed()
+    {
+        DateTimeOffsetHelper.Set(DateTimeOffset.UnixEpoch);
+
+        var validationFailures = new[]
+        {
+            new ValidationFailure("Property_1", "Message_1"),
+            new ValidationFailure("Property_1", "Message_2"),
+            new ValidationFailure("Property_2", "Message_3"),
+        };
+        
+        var exception = new ValidationException(validationFailures);
+        var expected = ValidationErrorModel.FromException(exception);
+        
+        _mediator.Setup(m =>
+                m.Send(It.IsAny<CreateVenueCommand>(), It.IsAny<CancellationToken>()))
+            .ThrowsAsync(exception);
+
+        var sut = CreateSut();
+        var response = await sut.AddVenue(new VenueWriteDto("test name"));
+
+        var objectResponse = response as ObjectResult;
+        objectResponse.Should().NotBeNull();
+        objectResponse?.StatusCode.Should().Be(400);
+
+        var content = objectResponse?.Value as ValidationErrorModel;
+        content.Should().BeEquivalentTo(expected);
+    }
+
+    [Fact]
+    public async Task AddVenue_ReturnsApplicationError_WhenExceptionHandled()
+    {
+        DateTimeOffsetHelper.Set(DateTimeOffset.UnixEpoch);
+        
+        var exception = new ApplicationException("Test exception");
+        var expected = ApplicationErrorModel.FromException(exception);
+        
+        _mediator.Setup(m =>
+                m.Send(It.IsAny<CreateVenueCommand>(), It.IsAny<CancellationToken>()))
+            .ThrowsAsync(exception);
+
+        var sut = CreateSut();
+        var response = await sut.AddVenue(new VenueWriteDto("test name"));
+
+        var objectResponse = response as ObjectResult;
+        objectResponse.Should().NotBeNull();
+        objectResponse?.StatusCode.Should().Be(500);
+
+        var content = objectResponse?.Value as ApplicationErrorModel;
+        content.Should().BeEquivalentTo(expected);
+    }
+    
+    // UpdateVenueById
+
+    [Fact]
+    public async Task UpdateVenueById_ReturnsOk_WhenVenueUpdate()
+    {
+        var venue = new Venue("updated value")
+        {
+            Id = Guid.NewGuid(),
+            CreatedDate = DateTimeOffset.MinValue,
+            ModifiedDate = DateTimeOffset.UnixEpoch
+        };
+
+        var expected = _mapper.Map<VenueReadDto>(venue);
+        
+        var command = new UpdateVenueByIdCommand(venue.Id, "input etag", "updated value");
+
+        _mediator.Setup(m =>
+                m.Send(It.Is<UpdateVenueByIdCommand>(c => c == command), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(venue)
+            .Verifiable(Times.Once);
+
+        var sut = CreateSut();
+        var response = await sut.UpdateVenueById(command.Id, command.EntityTag, new VenueWriteDto(command.Name));
+
+        sut.ControllerContext.HttpContext.Response.Headers.ETag.Should().BeEquivalentTo(venue.EntityTag);
+        
+        var okResponse = response as OkObjectResult;
+        okResponse.Should().NotBeNull();
+        okResponse?.StatusCode.Should().Be(200);
+
+        var content = okResponse?.Value as VenueReadDto;
+        content.Should().BeEquivalentTo(expected);
+    }
+
+    [Fact]
+    public async Task UpdateVenueById_ReturnsValidationError_WhenValidationFailed()
+    {
+        DateTimeOffsetHelper.Set(DateTimeOffset.UnixEpoch);
+
+        var validationFailures = new[]
+        {
+            new ValidationFailure("Property_1", "Message_1"),
+            new ValidationFailure("Property_1", "Message_2"),
+            new ValidationFailure("Property_2", "Message_3"),
+        };
+        
+        var exception = new ValidationException(validationFailures);
+        var expected = ValidationErrorModel.FromException(exception);
+        
+        _mediator.Setup(m =>
+                m.Send(It.IsAny<UpdateVenueByIdCommand>(), It.IsAny<CancellationToken>()))
+            .ThrowsAsync(exception);
+
+        var sut = CreateSut();
+        var response = await sut.UpdateVenueById(Guid.NewGuid(), string.Empty, new VenueWriteDto("test name"));
+
+        var objectResponse = response as ObjectResult;
+        objectResponse.Should().NotBeNull();
+        objectResponse?.StatusCode.Should().Be(400);
+
+        var content = objectResponse?.Value as ValidationErrorModel;
+        content.Should().BeEquivalentTo(expected);
+    }
+
+    [Fact]
+    public async Task UpdateVenueById_ReturnsNotFoundError_WhenVenueNotFound()
+    {
+        DateTimeOffsetHelper.Set(DateTimeOffset.UnixEpoch);
+        
+        var exception = new NotFoundException(typeof(Venue), Guid.NewGuid());
+        var expected = NotFoundErrorModel.FromException(exception);
+        
+        _mediator.Setup(m =>
+                m.Send(It.IsAny<UpdateVenueByIdCommand>(), It.IsAny<CancellationToken>()))
+            .ThrowsAsync(exception);
+
+        var sut = CreateSut();
+        var response = await sut.UpdateVenueById(Guid.NewGuid(), string.Empty, new VenueWriteDto("test name"));
+
+        var objectResponse = response as ObjectResult;
+        objectResponse.Should().NotBeNull();
+        objectResponse?.StatusCode.Should().Be(404);
+
+        var content = objectResponse?.Value as NotFoundErrorModel;
+        content.Should().BeEquivalentTo(expected);
+    }
+
+    [Fact]
+    public async Task UpdateVenueById_ReturnsPreconditionFailed_WhenEtagInvalid()
+    {
+        DateTimeOffsetHelper.Set(DateTimeOffset.UnixEpoch);
+        
+        var exception = new ConflictException(typeof(Venue), Guid.NewGuid(), "expected", "provided");
+        var expected = ConflictErrorModel.FromException(exception);
+        
+        _mediator.Setup(m =>
+                m.Send(It.IsAny<UpdateVenueByIdCommand>(), It.IsAny<CancellationToken>()))
+            .ThrowsAsync(exception);
+
+        var sut = CreateSut();
+        var response = await sut.UpdateVenueById(Guid.NewGuid(), string.Empty, new VenueWriteDto("test name"));
+
+        var objectResponse = response as ObjectResult;
+        objectResponse.Should().NotBeNull();
+        objectResponse?.StatusCode.Should().Be(412);
+
+        var content = objectResponse?.Value as ConflictErrorModel;
+        content.Should().BeEquivalentTo(expected);
+    }
+
+    [Fact]
+    public async Task UpdateVenueById_ReturnsInternalServerError_WhenExceptionHandled()
+    {
+        DateTimeOffsetHelper.Set(DateTimeOffset.UnixEpoch);
+        
+        var exception = new ApplicationException("Test exception");
+        var expected = ApplicationErrorModel.FromException(exception);
+        
+        _mediator.Setup(m =>
+                m.Send(It.IsAny<UpdateVenueByIdCommand>(), It.IsAny<CancellationToken>()))
+            .ThrowsAsync(exception);
+
+        var sut = CreateSut();
+        var response = await sut.UpdateVenueById(Guid.NewGuid(), string.Empty, new VenueWriteDto("test name"));
+
+        var objectResponse = response as ObjectResult;
+        objectResponse.Should().NotBeNull();
+        objectResponse?.StatusCode.Should().Be(500);
+
+        var content = objectResponse?.Value as ApplicationErrorModel;
+        content.Should().BeEquivalentTo(expected);
+    }
+    
+    // RemoveVenueById
+
+    [Fact]
+    public async Task RemoveVenueById_ReturnsNoContent_WhenVenueRemoved()
+    {
+        var command = new RemoveVenueByIdCommand(Guid.NewGuid(), "entity tag");
+        
+        _mediator.Setup(m => 
+                m.Send(It.Is<RemoveVenueByIdCommand>(c => c == command), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(true)
+            .Verifiable(Times.Once);
+
+        var sut = CreateSut();
+        var response = await sut.RemoveVenueById(command.Id, command.EntityTag);
+
+        var noContentResponse = response as NoContentResult;
+        noContentResponse.Should().NotBeNull();
+        noContentResponse?.StatusCode.Should().Be(204);
+    }
+
+    [Fact]
+    public async Task RemoveVenueById_ReturnsNotFound_WhenVenueNotFound()
+    {
+        DateTimeOffsetHelper.Set(DateTimeOffset.UnixEpoch);
+        
+        var exception = new NotFoundException(typeof(Venue), Guid.NewGuid());
+        var expected = NotFoundErrorModel.FromException(exception);
+        
+        _mediator.Setup(m =>
+                m.Send(It.IsAny<RemoveVenueByIdCommand>(), It.IsAny<CancellationToken>()))
+            .ThrowsAsync(exception);
+
+        var sut = CreateSut();
+        var response = await sut.RemoveVenueById(Guid.NewGuid(), string.Empty);
+
+        var objectResponse = response as ObjectResult;
+        objectResponse.Should().NotBeNull();
+        objectResponse?.StatusCode.Should().Be(404);
+
+        var content = objectResponse?.Value as NotFoundErrorModel;
+        content.Should().BeEquivalentTo(expected);
+    }
+
+    [Fact]
+    public async Task RemoveVenueById_ReturnsPreconditionFailed_WhenEtagInvalid()
+    {
+        DateTimeOffsetHelper.Set(DateTimeOffset.UnixEpoch);
+        
+        var exception = new ConflictException(typeof(Venue), Guid.NewGuid(), "expected", "provided");
+        var expected = ConflictErrorModel.FromException(exception);
+        
+        _mediator.Setup(m =>
+                m.Send(It.IsAny<RemoveVenueByIdCommand>(), It.IsAny<CancellationToken>()))
+            .ThrowsAsync(exception);
+
+        var sut = CreateSut();
+        var response = await sut.RemoveVenueById(Guid.NewGuid(), string.Empty);
+
+        var objectResponse = response as ObjectResult;
+        objectResponse.Should().NotBeNull();
+        objectResponse?.StatusCode.Should().Be(412);
+
+        var content = objectResponse?.Value as ConflictErrorModel;
+        content.Should().BeEquivalentTo(expected);
+    }
+
+    [Fact]
+    public async Task RemoveVenueById_ReturnsInternalServerError_WhenExceptionHandled()
+    {
+        DateTimeOffsetHelper.Set(DateTimeOffset.UnixEpoch);
+        
+        var exception = new ApplicationException("Test exception");
+        var expected = ApplicationErrorModel.FromException(exception);
+        
+        _mediator.Setup(m =>
+                m.Send(It.IsAny<RemoveVenueByIdCommand>(), It.IsAny<CancellationToken>()))
+            .ThrowsAsync(exception);
+
+        var sut = CreateSut();
+        var response = await sut.RemoveVenueById(Guid.NewGuid(), string.Empty);
+
+        var objectResponse = response as ObjectResult;
+        objectResponse.Should().NotBeNull();
+        objectResponse?.StatusCode.Should().Be(500);
+
+        var content = objectResponse?.Value as ApplicationErrorModel;
+        content.Should().BeEquivalentTo(expected);
+    }
+    
     // Private methods
 
     private VenuesController CreateSut() => 
