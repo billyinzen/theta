@@ -1,4 +1,4 @@
-namespace Theta.Api.Errors;
+namespace Theta.Common.Models.Errors;
 
 /// <summary>
 /// Read model representing generic application errors  

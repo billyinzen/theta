@@ -1,4 +1,3 @@
-using FluentAssertions;
 using Theta.Common.Helpers;
 
 namespace Theta.Common.Tests.Helpers;

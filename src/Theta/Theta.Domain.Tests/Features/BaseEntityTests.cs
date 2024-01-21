@@ -69,7 +69,6 @@ public class BaseEntityTests
         var guid = new Guid("855764ff-3dff-428d-bb29-a3467543c979");
         var created = DateTimeOffset.MinValue;
         var modified = DateTimeOffset.UnixEpoch.AddSeconds(1);
-        const string expected = "";
         
         var entity = new Venue("Name")
         {

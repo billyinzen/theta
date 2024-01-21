@@ -1,6 +1,6 @@
 using Theta.Common.Exceptions;
 
-namespace Theta.Api.Errors;
+namespace Theta.Common.Models.Errors;
 
 /// <summary>
 /// Read model representing NotFound errors  

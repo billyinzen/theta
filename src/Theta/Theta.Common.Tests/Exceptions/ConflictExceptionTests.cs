@@ -1,4 +1,3 @@
-using FluentAssertions;
 using Theta.Common.Exceptions;
 
 namespace Theta.Common.Tests.Exceptions;

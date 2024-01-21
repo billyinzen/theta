@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace Theta.Api.Errors;
+namespace Theta.Common.Models.Errors;
 
 /// <summary>
 /// Read model representing a validation failure

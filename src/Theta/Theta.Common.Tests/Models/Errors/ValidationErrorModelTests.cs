@@ -1,10 +1,9 @@
 using FluentValidation;
 using FluentValidation.Results;
-using Theta.Api.Errors;
-using Theta.Common.Exceptions;
 using Theta.Common.Helpers;
+using Theta.Common.Models.Errors;
 
-namespace Theta.Api.Tests.Errors;
+namespace Theta.Common.Tests.Models.Errors;
 
 public class ValidationErrorModelTests
 {

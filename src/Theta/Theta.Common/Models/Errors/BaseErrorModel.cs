@@ -1,6 +1,6 @@
 using Theta.Common.Helpers;
 
-namespace Theta.Api.Errors;
+namespace Theta.Common.Models.Errors;
 
 /// <summary>
 /// Base class for error models

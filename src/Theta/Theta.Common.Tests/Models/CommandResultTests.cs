@@ -1,4 +1,3 @@
-using FluentAssertions;
 using Theta.Common.Models;
 
 namespace Theta.Common.Tests.Models;
