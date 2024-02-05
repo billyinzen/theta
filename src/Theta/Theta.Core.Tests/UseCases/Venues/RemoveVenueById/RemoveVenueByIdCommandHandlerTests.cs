@@ -9,8 +9,8 @@ namespace Theta.Core.Tests.UseCases.Venues.RemoveVenueById;
 
 public class RemoveVenueByIdCommandHandlerTests
 {
-    private readonly Mock<IUnitOfWork> _unitOfWork = new();
-    private readonly Mock<IVenueRepository> _venueRepository = new();
+    private readonly IUnitOfWork _unitOfWork = Substitute.For<IUnitOfWork>();
+    private readonly IVenueRepository _venueRepository = Substitute.For<IVenueRepository>();
     
     // Handle
 
@@ -59,7 +59,7 @@ public class RemoveVenueByIdCommandHandlerTests
     // Private Methods
 
     private RemoveVenueByIdCommandHandler CreateSut()
-        => new(_unitOfWork.Object);
+        => new(_unitOfWork);
 
     private Venue GetVenue(Guid id)
         => new("test-name")
@@ -71,15 +71,12 @@ public class RemoveVenueByIdCommandHandlerTests
 
     private void SetupRepository(Venue? venue)
     {
-        _venueRepository.Setup(r => 
-                r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(venue);
+        _venueRepository.GetByIdAsync(Arg.Any<Guid>())
+            .Returns(venue);
 
-        _venueRepository.Setup(r => 
-                r.RemoveAsync(It.IsAny<Venue>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(true);
+        _venueRepository.RemoveAsync(Arg.Any<Venue>())
+            .Returns(true);
 
-        _unitOfWork.SetupGet(uow => uow.Venues)
-            .Returns(_venueRepository.Object);
+        _unitOfWork.Venues.Returns(_venueRepository);
     }
 }

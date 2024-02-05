@@ -10,10 +10,10 @@ namespace Theta.Core.Tests.UseCases.Venues.UpdateVenueById;
 
 public class UpdateVenueByCommandHandlerTests
 {
-    private readonly Mock<IUnitOfWork> _unitOfWork = new();
-    private readonly Mock<IVenueRepository> _venueRepository = new();
-    private readonly Mock<ValidationResult> _validationResult = new();
-    private readonly Mock<IValidator<UpdateVenueByIdCommand>> _validator = new();
+    private readonly IUnitOfWork _unitOfWork = Substitute.For<IUnitOfWork>();
+    private readonly IVenueRepository _venueRepository = Substitute.For<IVenueRepository>();
+    private readonly ValidationResult _validationResult = Substitute.For<ValidationResult>();
+    private readonly IValidator<UpdateVenueByIdCommand> _validator = Substitute.For<IValidator<UpdateVenueByIdCommand>>();
     
     // Handle
 
@@ -90,7 +90,7 @@ public class UpdateVenueByCommandHandlerTests
     // Private Methods
 
     private UpdateVenueByIdCommandHandler CreateSut()
-        => new(_unitOfWork.Object, _validator.Object);
+        => new(_unitOfWork, _validator);
 
     private Venue GetVenue(Guid id, string name)
         => new(name)
@@ -102,20 +102,14 @@ public class UpdateVenueByCommandHandlerTests
     
     private void SetupValidator(bool result)
     {
-        _validationResult.SetupGet(v => v.IsValid).Returns(result);
-        
-        _validator.Setup(v => 
-                v.ValidateAsync(It.IsAny<UpdateVenueByIdCommand>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(_validationResult.Object);
+        _validationResult.IsValid.Returns(result);
+        _validator.ValidateAsync(Arg.Any<UpdateVenueByIdCommand>())
+            .Returns(_validationResult);
     }
 
     private void SetupRepository(Venue? venue)
     {
-        _venueRepository.Setup(r => 
-                r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(venue);
-
-        _unitOfWork.SetupGet(uow => uow.Venues)
-            .Returns(_venueRepository.Object);
+        _venueRepository.GetByIdAsync(Arg.Any<Guid>()).Returns(venue);
+        _unitOfWork.Venues.Returns(_venueRepository);
     }
 }

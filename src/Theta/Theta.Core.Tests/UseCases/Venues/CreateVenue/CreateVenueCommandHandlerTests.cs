@@ -9,10 +9,10 @@ namespace Theta.Core.Tests.UseCases.Venues.CreateVenue;
 
 public class CreateVenueCommandHandlerTests
 {
-    private readonly Mock<ValidationResult> _validationResult = new();
-    private readonly Mock<IValidator<CreateVenueCommand>> _validator = new();
-    private readonly Mock<IUnitOfWork> _unitOfWork = new();
-    private readonly Mock<IVenueRepository> _venueRepository = new();
+    private readonly ValidationResult _validationResult = Substitute.For<ValidationResult>();
+    private readonly IValidator<CreateVenueCommand> _validator = Substitute.For<IValidator<CreateVenueCommand>>();
+    private readonly IUnitOfWork _unitOfWork = Substitute.For<IUnitOfWork>();
+    private readonly IVenueRepository _venueRepository = Substitute.For<IVenueRepository>();
     
     // Handle
 
@@ -39,12 +39,10 @@ public class CreateVenueCommandHandlerTests
         
         SetupValidator(true);
 
-        _venueRepository.Setup(r => 
-                r.CreateAsync(It.IsAny<Venue>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(true);
+        _venueRepository.CreateAsync(Arg.Any<Venue>())
+            .Returns(true);
 
-        _unitOfWork.SetupGet(uow => uow.Venues)
-            .Returns(_venueRepository.Object);
+        _unitOfWork.Venues.Returns(_venueRepository);
             
         var sut = CreateSut();
         var actual = await sut.Handle(command, default);
@@ -54,13 +52,13 @@ public class CreateVenueCommandHandlerTests
     // Private Methods
 
     private CreateVenueCommandHandler CreateSut()
-        => new(_unitOfWork.Object, _validator.Object);
+        => new(_unitOfWork, _validator);
 
     private void SetupValidator(bool result)
     {
-        _validationResult.SetupGet(v => v.IsValid).Returns(result);
-        _validator.Setup(v => 
-                v.ValidateAsync(It.IsAny<CreateVenueCommand>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(_validationResult.Object);
+        _validationResult.IsValid.Returns(result);
+        
+        _validator.ValidateAsync(Arg.Any<CreateVenueCommand>())
+            .Returns(_validationResult);
     }
 }

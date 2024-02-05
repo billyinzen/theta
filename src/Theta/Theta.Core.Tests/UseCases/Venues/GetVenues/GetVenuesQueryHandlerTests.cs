@@ -1,5 +1,3 @@
-using FluentAssertions;
-using Moq;
 using Theta.Core.UseCases.Venues.GetVenues;
 using Theta.Data.Repositories.Interfaces;
 using Theta.Data.Services;
@@ -9,8 +7,8 @@ namespace Theta.Core.Tests.UseCases.Venues.GetVenues;
 
 public class GetVenuesQueryHandlerTests
 {
-    private readonly Mock<IUnitOfWork> _unitOfWork = new();
-    private readonly Mock<IVenueRepository> _venueRepository = new();
+    private readonly IUnitOfWork _unitOfWork = Substitute.For<IUnitOfWork>();
+    private readonly IVenueRepository _venueRepository = Substitute.For<IVenueRepository>();
 
     // Handle
 
@@ -24,11 +22,8 @@ public class GetVenuesQueryHandlerTests
             new Venue("Three")
         };
 
-        _venueRepository.Setup(r => r.GetAllAsync(It.IsAny<CancellationToken>()))
-            .ReturnsAsync(data);
-        
-        _unitOfWork.SetupGet(uow => uow.Venues)
-            .Returns(_venueRepository.Object);
+        _venueRepository.GetAllAsync().Returns(data);
+        _unitOfWork.Venues.Returns(_venueRepository);
 
         var sut = CreateSut();
         var result = await sut.Handle(new GetVenuesQuery(), default);
@@ -39,5 +34,5 @@ public class GetVenuesQueryHandlerTests
     // Private Methods
 
     private GetVenuesQueryHandler CreateSut()
-        => new(_unitOfWork.Object);
+        => new(_unitOfWork);
 }

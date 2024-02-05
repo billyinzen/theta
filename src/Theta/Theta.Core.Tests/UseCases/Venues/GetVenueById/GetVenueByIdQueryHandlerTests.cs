@@ -1,5 +1,3 @@
-using FluentAssertions;
-using Moq;
 using Theta.Common.Exceptions;
 using Theta.Core.UseCases.Venues.GetVenueById;
 using Theta.Data.Repositories.Interfaces;
@@ -10,18 +8,18 @@ namespace Theta.Core.Tests.UseCases.Venues.GetVenueById;
 
 public class GetVenueByIdQueryHandlerTests
 {
-    private readonly Mock<IUnitOfWork> _unitOfWork = new();
-    private readonly Mock<IVenueRepository> _venueRepository = new();
+    private readonly IUnitOfWork _unitOfWork = Substitute.For<IUnitOfWork>();
+    private readonly IVenueRepository _venueRepository = Substitute.For<IVenueRepository>();
     
     // Handle
 
     [Fact]
     public async Task Handle_ThrowsNotFoundException_WhenNoVenueFoundWithId()
     {
-        _venueRepository.Setup(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(null as Venue);
+        _venueRepository.GetByIdAsync(Arg.Any<Guid>())
+            .Returns(null as Venue);
 
-        _unitOfWork.SetupGet(uow => uow.Venues).Returns(_venueRepository.Object);
+        _unitOfWork.Venues.Returns(_venueRepository);
         
         var sut = CreateSut();
         var action = () => sut.Handle(new GetVenueByIdQuery(Guid.NewGuid()), default);
@@ -36,10 +34,10 @@ public class GetVenueByIdQueryHandlerTests
             Id = Guid.NewGuid()
         };
         
-        _venueRepository.Setup(r => r.GetByIdAsync(It.Is<Guid>(g => g.Equals(expected.Id)), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(expected);
+        _venueRepository.GetByIdAsync(expected.Id)
+            .Returns(expected);
 
-        _unitOfWork.SetupGet(uow => uow.Venues).Returns(_venueRepository.Object);
+        _unitOfWork.Venues.Returns(_venueRepository);
         
         var sut = CreateSut();
         var actual = await sut.Handle(new GetVenueByIdQuery(expected.Id), default);
@@ -50,5 +48,5 @@ public class GetVenueByIdQueryHandlerTests
     // Private Methods
 
     private GetVenueByIdQueryHandler CreateSut()
-        => new(_unitOfWork.Object);
+        => new(_unitOfWork);
 }

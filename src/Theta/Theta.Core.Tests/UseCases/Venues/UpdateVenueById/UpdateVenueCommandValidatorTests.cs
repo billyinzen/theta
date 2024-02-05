@@ -10,8 +10,8 @@ namespace Theta.Core.Tests.UseCases.Venues.UpdateVenueById;
 
 public class UpdateVenueCommandValidatorTests
 {
-    private readonly Mock<IUnitOfWork> _unitOfWork = new();
-    private readonly Mock<IVenueRepository> _venueRepository = new();
+    private readonly IUnitOfWork _unitOfWork = Substitute.For<IUnitOfWork>();
+    private readonly IVenueRepository _venueRepository = Substitute.For<IVenueRepository>();
     
     // ValidateAsync
 
@@ -20,12 +20,10 @@ public class UpdateVenueCommandValidatorTests
     {
         var command = GetCommand(name: "valid name");
 
-        _venueRepository.Setup(vr => 
-                vr.IsNameUniqueAsync(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(true);
+        _venueRepository.IsNameUniqueAsync(Arg.Any<string>(), Arg.Any<Guid>())
+            .Returns(true);
 
-        _unitOfWork.SetupGet(uow => uow.Venues)
-            .Returns(_venueRepository.Object);
+        _unitOfWork.Venues.Returns(_venueRepository);
 
         var sut = CreateSut();
         var actual = await sut.ValidateAsync(command);
@@ -37,12 +35,10 @@ public class UpdateVenueCommandValidatorTests
     {
         var command = GetCommand(name: "valid name");
 
-        _venueRepository.Setup(vr => 
-                vr.IsNameUniqueAsync(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(false);
+        _venueRepository.IsNameUniqueAsync(Arg.Any<string>(), Arg.Any<Guid>())
+            .Returns(false);
 
-        _unitOfWork.SetupGet(uow => uow.Venues)
-            .Returns(_venueRepository.Object);
+        _unitOfWork.Venues.Returns(_venueRepository);
 
         var sut = CreateSut();
         var actual = await sut.ValidateAsync(command);
@@ -54,12 +50,10 @@ public class UpdateVenueCommandValidatorTests
     {
         var command = GetCommand(name: new string('-', VenueConstants.NameMinimumLength - 1));
 
-        _venueRepository.Setup(vr => 
-                vr.IsNameUniqueAsync(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(true);
+        _venueRepository.IsNameUniqueAsync(Arg.Any<string>(), Arg.Any<Guid>())
+            .Returns(true);
 
-        _unitOfWork.SetupGet(uow => uow.Venues)
-            .Returns(_venueRepository.Object);
+        _unitOfWork.Venues.Returns(_venueRepository);
 
         var sut = CreateSut();
         var actual = await sut.ValidateAsync(command);
@@ -71,12 +65,10 @@ public class UpdateVenueCommandValidatorTests
     {
         var command = GetCommand(name: new string('-', VenueConstants.NameMaximumLength + 1));
 
-        _venueRepository.Setup(vr => 
-                vr.IsNameUniqueAsync(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(true);
+        _venueRepository.IsNameUniqueAsync(Arg.Any<string>(), Arg.Any<Guid>())
+            .Returns(true);
 
-        _unitOfWork.SetupGet(uow => uow.Venues)
-            .Returns(_venueRepository.Object);
+        _unitOfWork.Venues.Returns(_venueRepository);
 
         var sut = CreateSut();
         var actual = await sut.ValidateAsync(command);
@@ -86,7 +78,7 @@ public class UpdateVenueCommandValidatorTests
     // Private Methods
 
     private UpdateVenueByIdCommandValidator CreateSut()
-        => new(_unitOfWork.Object);
+        => new(_unitOfWork);
 
     private static UpdateVenueByIdCommand GetCommand(
         Guid? id = null,
