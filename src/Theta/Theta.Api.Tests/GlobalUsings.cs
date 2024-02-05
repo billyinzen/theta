@@ -1,3 +1,4 @@
 global using Xunit;
-global using Moq;
+global using NSubstitute;
+global using NSubstitute.ExceptionExtensions;
 global using FluentAssertions;
