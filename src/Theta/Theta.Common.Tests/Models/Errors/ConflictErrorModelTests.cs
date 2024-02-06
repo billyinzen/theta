@@ -1,21 +1,16 @@
 using Theta.Common.Exceptions;
-using Theta.Common.Helpers;
 using Theta.Common.Models.Errors;
+using Theta.Common.Services;
 
 namespace Theta.Common.Tests.Models.Errors;
 
 public class ConflictErrorModelTests
 {
-    public ConflictErrorModelTests()
-    {
-        DateTimeOffsetHelper.Reset();
-    }
-    
     [Fact]
     public void FromException_ShouldGenerateModel_FromException()
     {
-        DateTimeOffsetHelper.Set(DateTimeOffset.UnixEpoch);
-
+        using var dateContext = new DateTimeOffsetProviderContext(DateTimeOffset.UnixEpoch);
+        
         var exception = new ConflictException(typeof(ConflictException), Guid.NewGuid(), "actual", "provided");
         var actual = ConflictErrorModel.FromException(exception);
 

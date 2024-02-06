@@ -1,7 +1,7 @@
 using FluentAssertions;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using Theta.Common.Helpers;
+using Theta.Common.Services;
 using Theta.Data.Context;
 using Theta.Domain.Features.Venues;
 
@@ -17,8 +17,8 @@ public class ThetaDbContextTests
         var entity = new Venue("test entity");
         
         var fixedTimestamp = DateTimeOffset.UnixEpoch;
-        DateTimeOffsetHelper.Set(fixedTimestamp);
-        
+        using var dateContext = new DateTimeOffsetProviderContext(DateTimeOffset.UnixEpoch);
+                    
         var sut = CreateSut();
 
         await sut.AddAsync(entity);
@@ -38,13 +38,14 @@ public class ThetaDbContextTests
         var sut = CreateSut();
         
         // Add an entity
-        DateTimeOffsetHelper.Set(DateTimeOffset.UnixEpoch);
+        using var initialDateContext = new DateTimeOffsetProviderContext(DateTimeOffset.UnixEpoch);
         await sut.AddAsync(entity);
         await sut.SaveChangesAsync();
 
         // Update the entity
         var fixedTimestamp = new DateTimeOffset(1990, 1, 26, 10, 38, 15, TimeSpan.FromHours(1));
-        DateTimeOffsetHelper.Set(fixedTimestamp);
+        using var laterDateContext = new DateTimeOffsetProviderContext(fixedTimestamp);
+        
         entity.Name = "updated name";
         sut.Update(entity);
         await sut.SaveChangesAsync();

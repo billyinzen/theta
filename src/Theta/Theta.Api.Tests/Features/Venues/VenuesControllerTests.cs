@@ -6,9 +6,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Theta.Api.Features.Venues;
 using Theta.Api.Features.Venues.DTOs;
+using Theta.Api.Tests.TestHelpers;
 using Theta.Common.Exceptions;
-using Theta.Common.Helpers;
 using Theta.Common.Models.Errors;
+using Theta.Common.Services;
 using Theta.Core.UseCases.Venues.CreateVenue;
 using Theta.Core.UseCases.Venues.GetVenueById;
 using Theta.Core.UseCases.Venues.GetVenues;
@@ -83,7 +84,7 @@ public class VenuesControllerTests
     [Fact]
     public async Task GetVenues_ReturnsInternalServerError_WhenExceptionHandled()
     {
-        DateTimeOffsetHelper.Set(DateTimeOffset.MinValue);
+        using var dateContext = new DateTimeOffsetProviderContext(DateTimeOffset.MinValue);
         
         var exception = new ApplicationException("test exception");
 
@@ -124,7 +125,7 @@ public class VenuesControllerTests
         var response = await sut.GetVenueById(venue.Id);
     
         // Check response headers
-        sut.ControllerContext.HttpContext.Response.Headers.ETag.Should().BeEquivalentTo(venue.EntityTag);
+        sut.GetResponseEtag().Should().BeEquivalentTo(venue.EntityTag);
         
         var okResponse = response as OkObjectResult;
         okResponse.Should().NotBeNull();
@@ -137,7 +138,7 @@ public class VenuesControllerTests
     [Fact]
     public async Task GetVenueById_ReturnsNotFound_WhenVenueNotFound()
     {
-        DateTimeOffsetHelper.Set(new DateTimeOffset(2024, 1, 1, 12, 34, 15, TimeSpan.FromHours(5)));
+        using var dateContext = new DateTimeOffsetProviderContext(new DateTimeOffset(2024, 1, 1, 12, 34, 15, TimeSpan.FromHours(5)));
         
         var exception = new NotFoundException(typeof(Venue), Guid.NewGuid());
         var expected = NotFoundErrorModel.FromException(exception);
@@ -159,7 +160,7 @@ public class VenuesControllerTests
     [Fact]
     public async Task GetVenueById_ReturnsInvalidServerError_WhenExceptionHandled()
     {
-        DateTimeOffsetHelper.Set(new DateTimeOffset(2014, 5, 4, 16, 54, 37, TimeSpan.FromHours(-2)));
+        using var dateContext = new DateTimeOffsetProviderContext(new DateTimeOffset(2024, 5, 4, 16, 54, 37, TimeSpan.FromHours(-2)));
         
         var exception = new ApplicationException("Test exception");
         var expected = ApplicationErrorModel.FromException(exception);
@@ -196,7 +197,7 @@ public class VenuesControllerTests
         var sut = CreateSut();
         var response = await sut.GetVenueByIdHeaders(venue.Id);
     
-        sut.ControllerContext.HttpContext.Response.Headers.ETag.Should().BeEquivalentTo(venue.EntityTag);
+        sut.GetResponseEtag().Should().BeEquivalentTo(venue.EntityTag);
         
         var okResponse = response as NoContentResult;
         okResponse.Should().NotBeNull();
@@ -206,7 +207,7 @@ public class VenuesControllerTests
     [Fact]
     public async Task GetVenueByIdGetVenueByIdHeaders_ReturnsNotFound_WhenVenueNotFound()
     {
-        DateTimeOffsetHelper.Set(new DateTimeOffset(2024, 1, 1, 12, 34, 15, TimeSpan.FromHours(5)));
+        using var dateContext = new DateTimeOffsetProviderContext(new DateTimeOffset(2024, 1, 1, 12, 34, 15, TimeSpan.FromHours(5)));
         
         var exception = new NotFoundException(typeof(Venue), Guid.NewGuid());
         var expected = NotFoundErrorModel.FromException(exception);
@@ -228,7 +229,7 @@ public class VenuesControllerTests
     [Fact]
     public async Task GetVenueByIdHeaders_ReturnsInvalidServerError_WhenExceptionHandled()
     {
-        DateTimeOffsetHelper.Set(new DateTimeOffset(2014, 5, 4, 16, 54, 37, TimeSpan.FromHours(-2)));
+        using var dateContext = new DateTimeOffsetProviderContext(new DateTimeOffset(2014, 5, 4, 16, 54, 37, TimeSpan.FromHours(-2)));
         
         var exception = new ApplicationException("Test exception");
         var expected = ApplicationErrorModel.FromException(exception);
@@ -269,7 +270,7 @@ public class VenuesControllerTests
         var sut = CreateSut();
         var response = await sut.AddVenue(new VenueWriteDto(command.Name));
     
-        sut.ControllerContext.HttpContext.Response.Headers.ETag.Should().BeEquivalentTo(venue.EntityTag);
+        sut.GetResponseEtag().Should().BeEquivalentTo(venue.EntityTag);
     
         var createdResponse = response as CreatedAtActionResult;
         createdResponse.Should().NotBeNull();
@@ -283,7 +284,7 @@ public class VenuesControllerTests
     [Fact]
     public async Task AddVenue_ReturnsValidationError_WhenValidationFailed()
     {
-        DateTimeOffsetHelper.Set(DateTimeOffset.UnixEpoch);
+        using var dateContext = new DateTimeOffsetProviderContext(DateTimeOffset.UnixEpoch);
     
         var validationFailures = new[]
         {
@@ -312,7 +313,7 @@ public class VenuesControllerTests
     [Fact]
     public async Task AddVenue_ReturnsApplicationError_WhenExceptionHandled()
     {
-        DateTimeOffsetHelper.Set(DateTimeOffset.UnixEpoch);
+        using var dateContext = new DateTimeOffsetProviderContext(DateTimeOffset.UnixEpoch);
         
         var exception = new ApplicationException("Test exception");
         var expected = ApplicationErrorModel.FromException(exception);
@@ -353,7 +354,7 @@ public class VenuesControllerTests
         var sut = CreateSut();
         var response = await sut.UpdateVenueById(command.Id, command.EntityTag, new VenueWriteDto(command.Name));
     
-        sut.ControllerContext.HttpContext.Response.Headers.ETag.Should().BeEquivalentTo(venue.EntityTag);
+        sut.GetResponseEtag().Should().BeEquivalentTo(venue.EntityTag);
         
         var okResponse = response as OkObjectResult;
         okResponse.Should().NotBeNull();
@@ -366,7 +367,7 @@ public class VenuesControllerTests
     [Fact]
     public async Task UpdateVenueById_ReturnsValidationError_WhenValidationFailed()
     {
-        DateTimeOffsetHelper.Set(DateTimeOffset.UnixEpoch);
+        using var dateContext = new DateTimeOffsetProviderContext(DateTimeOffset.UnixEpoch);
     
         var validationFailures = new[]
         {
@@ -395,7 +396,7 @@ public class VenuesControllerTests
     [Fact]
     public async Task UpdateVenueById_ReturnsNotFoundError_WhenVenueNotFound()
     {
-        DateTimeOffsetHelper.Set(DateTimeOffset.UnixEpoch);
+        using var dateContext = new DateTimeOffsetProviderContext(DateTimeOffset.UnixEpoch);
         
         var exception = new NotFoundException(typeof(Venue), Guid.NewGuid());
         var expected = NotFoundErrorModel.FromException(exception);
@@ -417,7 +418,7 @@ public class VenuesControllerTests
     [Fact]
     public async Task UpdateVenueById_ReturnsPreconditionFailed_WhenEtagInvalid()
     {
-        DateTimeOffsetHelper.Set(DateTimeOffset.UnixEpoch);
+        using var dateContext = new DateTimeOffsetProviderContext(DateTimeOffset.UnixEpoch);
         
         var exception = new ConflictException(typeof(Venue), Guid.NewGuid(), "expected", "provided");
         var expected = ConflictErrorModel.FromException(exception);
@@ -439,7 +440,7 @@ public class VenuesControllerTests
     [Fact]
     public async Task UpdateVenueById_ReturnsInternalServerError_WhenExceptionHandled()
     {
-        DateTimeOffsetHelper.Set(DateTimeOffset.UnixEpoch);
+        using var dateContext = new DateTimeOffsetProviderContext(DateTimeOffset.UnixEpoch);
         
         var exception = new ApplicationException("Test exception");
         var expected = ApplicationErrorModel.FromException(exception);
@@ -479,7 +480,7 @@ public class VenuesControllerTests
     [Fact]
     public async Task RemoveVenueById_ReturnsNotFound_WhenVenueNotFound()
     {
-        DateTimeOffsetHelper.Set(DateTimeOffset.UnixEpoch);
+        using var dateContext = new DateTimeOffsetProviderContext(DateTimeOffset.UnixEpoch);
         
         var exception = new NotFoundException(typeof(Venue), Guid.NewGuid());
         var expected = NotFoundErrorModel.FromException(exception);
@@ -501,7 +502,7 @@ public class VenuesControllerTests
     [Fact]
     public async Task RemoveVenueById_ReturnsPreconditionFailed_WhenEtagInvalid()
     {
-        DateTimeOffsetHelper.Set(DateTimeOffset.UnixEpoch);
+        using var dateContext = new DateTimeOffsetProviderContext(DateTimeOffset.UnixEpoch);
         
         var exception = new ConflictException(typeof(Venue), Guid.NewGuid(), "expected", "provided");
         var expected = ConflictErrorModel.FromException(exception);
@@ -523,8 +524,8 @@ public class VenuesControllerTests
     [Fact]
     public async Task RemoveVenueById_ReturnsInternalServerError_WhenExceptionHandled()
     {
-        DateTimeOffsetHelper.Set(DateTimeOffset.UnixEpoch);
-        
+        using var dateContext = new DateTimeOffsetProviderContext(DateTimeOffset.UnixEpoch);
+                    
         var exception = new ApplicationException("Test exception");
         var expected = ApplicationErrorModel.FromException(exception);
         

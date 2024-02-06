@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Theta.Common.Helpers;
-using Theta.Common.Models;
+using Theta.Common.Services;
 using Theta.Data.Configuration;
 using Theta.Domain.Features;
 using Theta.Domain.Features.Venues;
@@ -34,8 +33,8 @@ public class ThetaDbContext : DbContext
                      .Cast<BaseEntity>())
         {
             entity.Id = Guid.NewGuid();
-            entity.CreatedDate = DateTimeOffsetHelper.Now();
-            entity.ModifiedDate = DateTimeOffsetHelper.Now();
+            entity.CreatedDate = DateTimeOffsetProvider.Now;
+            entity.ModifiedDate = DateTimeOffsetProvider.Now;
         }
         
         foreach (var entity in ChangeTracker.Entries()
@@ -43,7 +42,7 @@ public class ThetaDbContext : DbContext
                      .Select(entityEntry => entityEntry.Entity)
                      .Cast<BaseEntity>())
         {
-            entity.ModifiedDate = DateTimeOffsetHelper.Now();
+            entity.ModifiedDate = DateTimeOffsetProvider.Now;
         }
         
         return base.SaveChangesAsync(cancellationToken);

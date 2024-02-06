@@ -1,4 +1,5 @@
 using Theta.Common.Helpers;
+using Theta.Common.Services;
 
 namespace Theta.Common.Models.Errors;
 
@@ -15,7 +16,7 @@ public abstract class BaseErrorModel
     /// <summary>
     /// Timestamp of the error
     /// </summary>
-    public DateTimeOffset Timestamp = DateTimeOffsetHelper.Now();
+    public DateTimeOffset Timestamp = DateTimeOffsetProvider.Now;
     
     /// <summary>
     /// Initialize a new instance of the <see cref="BaseErrorModel"/> class
