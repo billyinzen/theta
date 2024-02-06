@@ -1,6 +1,6 @@
 namespace Theta.Common.Services;
 
-public class DateTimeOffsetProvider
+public static class DateTimeOffsetProvider
 {
     public static DateTimeOffset Now
         => DateTimeOffsetProviderContext.Current == null
